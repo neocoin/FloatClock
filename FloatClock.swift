@@ -25,15 +25,18 @@
 // $ swiftc -o clock -gnone -O -target x86_64-apple-macosx10.14 clock.swift
 // How to run:
 // $ ./clock
-
 import Cocoa
+
+let WINDOW_WIDTH: CGFloat = 140
+let WINDOW_HEIGHT: CGFloat = 20
+let FONT_SIZE: CGFloat = 16
 
 class Clock: NSObject, NSApplicationDelegate {
     var timer : NSWindow?
 
     func updateWindowPosition() {
-        let windowWidth: CGFloat = 120
-        let windowHeight: CGFloat = 30
+        let windowWidth: CGFloat = WINDOW_WIDTH;
+        let windowHeight: CGFloat = WINDOW_HEIGHT;
 
         let screenWidth = (NSScreen.main?.frame.width)!
         let screenHeight = (NSScreen.main?.frame.height)!
@@ -55,6 +58,7 @@ class Clock: NSObject, NSApplicationDelegate {
         let formatter = DateFormatter()
         formatter.dateStyle = .none
         formatter.timeStyle = .short
+        formatter.dateFormat = format
 
         let label = NSTextField()
         label.font = font
@@ -101,18 +105,18 @@ class Clock: NSObject, NSApplicationDelegate {
     }
 
     func initTimeDisplay() {
-        let font = NSFont.monospacedDigitSystemFont(ofSize: 22, weight: .regular)
+        let font = NSFont.monospacedDigitSystemFont(ofSize: FONT_SIZE, weight: .regular)
         let label = self.initLabel(
             font     : font,
-            format   : "hh:mm",
+            format   : "hh:mm a",
             interval : 1
         )
 
         let screenWidth = (NSScreen.main?.frame.width)!
         let screenHeight = (NSScreen.main?.frame.height)!
 
-        let windowWidth: CGFloat = 120
-        let windowHeight: CGFloat = 30
+        let windowWidth: CGFloat = WINDOW_WIDTH;
+        let windowHeight: CGFloat = WINDOW_HEIGHT;
 
         let rect = NSMakeRect(screenWidth - windowWidth,
                 screenHeight - windowHeight,
