@@ -8,7 +8,7 @@ INSTALLED_PLIST = $(LAUNCH_AGENTS_DIR)/$(PLIST)
 
 .PHONY: install uninstall all clean register unregister
 
-all: $(NAME)
+all: $(NAME) ## Compile all
 
 $(NAME): $(NAME).swift
 	swiftc $< -o $@
@@ -16,18 +16,24 @@ $(NAME): $(NAME).swift
 $(PLIST): $(PLIST).in
 	cat $< | sed 's,@BIN_DIR@,$(BIN_DIR),g;s,@NAME@,$(NAME),g' > $@
 
-clean:
+clean: ## Remove build files.
 	rm -f $(NAME) $(PLIST)
 
-install: $(NAME) $(PLIST)
+install: $(NAME) $(PLIST) ## Install to bin directory.
 	install -m 755 $(NAME) $(BIN_DIR)
 	install -m 644 $(PLIST) $(INSTALLED_PLIST)
 
-uninstall: unregister
+uninstall: unregister ## remove from bin directory.
 	rm -f $(NAME) $(INSTALLED_PLIST)
 
-unregister:
+unregister: ## Unregister from launchctl.
 	test -f $(INSTALLED_PLIST) && launchctl unload $(INSTALLED_PLIST) || true
 
-register: install
+register: install ## register to launchctl.
 	launchctl load $(INSTALLED_PLIST)
+
+help: ## Show this help.
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
+test: ## Run Test
+	swift test
